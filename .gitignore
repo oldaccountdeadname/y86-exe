@@ -1,0 +1,5 @@
+*~
+/.ccls-cache
+
+*.o
+/y86-exe
