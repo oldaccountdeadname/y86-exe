@@ -13,7 +13,7 @@
 
 struct memory {
 	struct {
-		void *x;
+		uint64_t *x;
 		int fd;
 	} alloc;
 
