@@ -29,6 +29,8 @@ mloadf(FILE *f)
 
 	fseek(f, 0, SEEK_END);
 	len = ftell(f);
+	fseek(f, 0, SEEK_SET);
+
 	if (len > MEMSIZE) {
 		fprintf(stderr, "\033[1;31mGiven executable is too large.\033[0m\n");
 		return NULL;
@@ -42,11 +44,15 @@ mloadf(FILE *f)
 
 	map = mmap(NULL, MEMSIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE, zf, 0);
 	if (!f) {
-		fprintf(stderr, "\033[1;31Couldn't map memory for emulation.\033[0m\n");
+		fprintf(stderr, "\033[1;31mCouldn't map memory for emulation.\033[0m\n");
 		return NULL;
 	}
 
-	fread(map, 1, len, f);
+	if (fread(map, 1, len, f) == 0) {
+		fprintf(stderr,	"\033[1;31mCouldn't read file.\033[0m\n");
+		munmap(map, MEMSIZE);
+		return NULL;
+	}
 
 	struct memory *m = malloc(sizeof(struct memory));
 	if (!m) {
