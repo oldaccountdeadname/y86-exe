@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
 
@@ -13,7 +14,7 @@
 
 struct memory {
 	struct {
-		uint64_t *x;
+		char *x;
 		int fd;
 	} alloc;
 
@@ -73,4 +74,49 @@ mdest(struct memory *m)
 	munmap(m->alloc.x, MEMSIZE);
 	close(m->alloc.fd);
 	free(m);
+}
+
+int
+mset(struct memory *m, uint64_t addr, uint64_t val)
+{
+	if (addr > m->prog_size)
+		return 0;
+
+	m->alloc.x[addr] = val;
+	return 1;
+}
+
+uint64_t
+mget(const struct memory *m, uint64_t addr, int *oor)
+{
+	if (addr + 8 > m->prog_size) {
+		*oor = 1;
+		return 0;
+	} else {
+		*oor = 0;
+		return m->alloc.x[addr];
+	}
+}
+
+struct m_ins
+mget_ins(const struct memory *m, uint64_t addr, int *inv)
+{
+	struct m_ins ins = {
+		.bytes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	};
+
+	if (addr + 10 > m->prog_size) {
+		*inv = 1;
+		return ins;
+	} else {
+		*inv = 0;
+		memcpy(&ins.bytes, m->alloc.x + addr, 10);
+		return ins;
+	}
+}
+
+uint64_t
+mstack_start(const struct memory *m)
+{
+	return m->prog_size;
 }
