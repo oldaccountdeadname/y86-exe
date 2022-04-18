@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
 
@@ -13,7 +14,7 @@
 
 struct memory {
 	struct {
-		uint64_t *x;
+		char *x;
 		int fd;
 	} alloc;
 
@@ -29,6 +30,8 @@ mloadf(FILE *f)
 
 	fseek(f, 0, SEEK_END);
 	len = ftell(f);
+	fseek(f, 0, SEEK_SET);
+
 	if (len > MEMSIZE) {
 		fprintf(stderr, "\033[1;31mGiven executable is too large.\033[0m\n");
 		return NULL;
@@ -42,11 +45,15 @@ mloadf(FILE *f)
 
 	map = mmap(NULL, MEMSIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE, zf, 0);
 	if (!f) {
-		fprintf(stderr, "\033[1;31Couldn't map memory for emulation.\033[0m\n");
+		fprintf(stderr, "\033[1;31mCouldn't map memory for emulation.\033[0m\n");
 		return NULL;
 	}
 
-	fread(map, 1, len, f);
+	if (fread(map, 1, len, f) == 0) {
+		fprintf(stderr,	"\033[1;31mCouldn't read file.\033[0m\n");
+		munmap(map, MEMSIZE);
+		return NULL;
+	}
 
 	struct memory *m = malloc(sizeof(struct memory));
 	if (!m) {
@@ -67,4 +74,49 @@ mdest(struct memory *m)
 	munmap(m->alloc.x, MEMSIZE);
 	close(m->alloc.fd);
 	free(m);
+}
+
+int
+mset(struct memory *m, uint64_t addr, uint64_t val)
+{
+	if (addr > m->prog_size)
+		return 0;
+
+	m->alloc.x[addr] = val;
+	return 1;
+}
+
+uint64_t
+mget(const struct memory *m, uint64_t addr, int *oor)
+{
+	if (addr + 8 > m->prog_size) {
+		*oor = 1;
+		return 0;
+	} else {
+		*oor = 0;
+		return m->alloc.x[addr];
+	}
+}
+
+struct m_ins
+mget_ins(const struct memory *m, uint64_t addr, int *inv)
+{
+	struct m_ins ins = {
+		.bytes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	};
+
+	if (addr + 10 > m->prog_size) {
+		*inv = 1;
+		return ins;
+	} else {
+		*inv = 0;
+		memcpy(&ins.bytes, m->alloc.x + addr, 10);
+		return ins;
+	}
+}
+
+uint64_t
+mstack_start(const struct memory *m)
+{
+	return m->prog_size;
 }
