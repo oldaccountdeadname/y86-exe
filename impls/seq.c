@@ -187,8 +187,8 @@ fetch(void)
 
 static void changeFetch()
 {
-	printf("~~~~~~~~~~FETCH STAGE~~~~~~~~~~");
-	printf("rA: %llu\t rB: %llu\t valC: %llu\t valP: %llu\t icode: %u\t ifun: %d\t", state.fetch.a, state.fetch.b, state.fetch.c, state.fetch.p, state.fetch.icode, state.fetch.ifun);
+	printf("~~~~~~~~~~FETCH STAGE~~~~~~~~~~\n");
+	printf("rA: %llu\t rB: %llu\t valC: %llu\t valP: %llu\t icode: %u\t ifun: %d\t\n", state.fetch.a, state.fetch.b, state.fetch.c, state.fetch.p, state.fetch.icode, state.fetch.ifun);
 }
 
 static void
@@ -259,8 +259,8 @@ ex_ins:
 
 static void changeDecode()
 {
-	printf("~~~~~~~~~~DECODE STAGE~~~~~~~~~~");
-	printf("valA: %llu\t valB: %llu", state.decode.a, state.decode.b);
+	printf("~~~~~~~~~~DECODE STAGE~~~~~~~~~~\n");
+	printf("valA: %llu\t valB: %llu\n", state.decode.a, state.decode.b);
 }
 
 static void
@@ -341,8 +341,8 @@ execute(void)
 
 static void changeExecute()
 {
-	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~");
-	printf("valE: %llu\t Cnd: %hd", state.execute.e, state.execute.cond);
+	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
+	printf("valE: %llu\t Cnd: %hd\n", state.execute.e, state.execute.cond);
 }
 
 static void
@@ -392,8 +392,8 @@ eadr:
 
 static void changeMemory()
 {
-	printf("~~~~~~~~~~MEMORY STAGE~~~~~~~~~~");
-	printf("valM: %llu\t", state.memory.m);
+	printf("~~~~~~~~~~MEMORY STAGE~~~~~~~~~~\n");
+	printf("valM: %llu\t\n", state.memory.m);
 }
 
 static void
@@ -445,8 +445,8 @@ pcupdate(void)
 
 static void changePCUpdt()
 {
-	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~");
-	printf("newPC: %llu\t", state.pc);
+	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
+	printf("newPC: %llu\t\n", state.pc);
 }
 
 static int
@@ -491,6 +491,6 @@ ovfl(int a, int b, int r)
 
 static void printRegs()
 {
-	printf("RAX\tRBX\tRCX\tRDX\tRSP\tRBP\tRSI\tRDI\tR8\tR9\tR10\tR11\tR12\tR13\tR14\tR15");
-	printf("%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t", state.registers[0], state.registers[1], state.registers[2], state.registers[3], state.registers[4], state.registers[5], state.registers[6], state.registers[7], state.registers[8], state.registers[9], state.registers[10], state.registers[11], state.registers[12], state.registers[13], state.registers[14], state.registers[15]);
+	printf("RAX\tRBX\tRCX\tRDX\tRSP\tRBP\tRSI\tRDI\tR8\tR9\tR10\tR11\tR12\tR13\tR14\tR15\n");
+	printf("%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t%llu\t\n", state.registers[0], state.registers[1], state.registers[2], state.registers[3], state.registers[4], state.registers[5], state.registers[6], state.registers[7], state.registers[8], state.registers[9], state.registers[10], state.registers[11], state.registers[12], state.registers[13], state.registers[14], state.registers[15]);
 }
