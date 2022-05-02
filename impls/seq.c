@@ -22,12 +22,13 @@ static void execute(void);
 static void memory(void);
 static void writeback(void);
 static void pcupdate(void);
-static void changeFetch(void);
-static void changeDecode(void);
-static void changeExecute(void);
-static void changeMemory(void);
-static void changePCUpdt(void);
-static void printRegs(void);
+
+static void disp_fetch(void);
+static void disp_decode(void);
+static void disp_exec(void);
+static void disp_mem(void);
+static void disp_pc_updt(void);
+static void disp_regs(void);
 
 
 /* Check condition codes to see if they match what's given in cmpcc. */
@@ -94,8 +95,8 @@ static struct {
 };
 
 static stage_t stages[] = {
-	fetch, changeFetch, decode, changeDecode, execute, changeExecute,
-	memory, changeMemory, writeback, printRegs, pcupdate, changePCUpdt,
+	fetch, disp_fetch, decode, disp_decode, execute, disp_exec,
+	memory, disp_mem, writeback, disp_regs, pcupdate, disp_pc_updt,
 };
 
 static unsigned int nstages = sizeof(stages) / sizeof(*stages);
@@ -182,13 +183,6 @@ fetch(void)
 	}
 }
 
-static void changeFetch()
-{
-	printf("~~~~~~~~~~FETCH STAGE~~~~~~~~~~\n");
-	printf("rA: %"PRIu64"\t rB: %"PRIu64"\t valC: %"PRIu64
-	       "\t valP: %"PRIu64"\t icode: %u\t ifun: %d\t\n", state.fetch.a, state.fetch.b, state.fetch.c, state.fetch.p, state.fetch.icode, state.fetch.ifun);
-}
-
 static void
 decode(void)
 {
@@ -253,12 +247,6 @@ decode(void)
 
 ex_ins:
 	state.ex = EX_INS;
-}
-
-static void changeDecode()
-{
-	printf("~~~~~~~~~~DECODE STAGE~~~~~~~~~~\n");
-	printf("valA: %"PRIu64"\t valB: %"PRIu64"\n", state.decode.a, state.decode.b);
 }
 
 static void
@@ -337,12 +325,6 @@ execute(void)
 	}
 }
 
-static void changeExecute()
-{
-	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
-	printf("valE: %"PRIu64"\t Cnd: %hd\n", state.execute.e, state.execute.cond);
-}
-
 static void
 memory(void)
 {
@@ -386,12 +368,6 @@ memory(void)
 
 eadr:
 	state.ex = EX_ADR;
-}
-
-static void changeMemory()
-{
-	printf("~~~~~~~~~~MEMORY STAGE~~~~~~~~~~\n");
-	printf("valM: %"PRIu64"\t\n", state.memory.m);
 }
 
 static void
@@ -441,7 +417,37 @@ pcupdate(void)
 	state.pc = state.fetch.p;
 }
 
-static void changePCUpdt()
+static void
+disp_fetch()
+{
+	printf("~~~~~~~~~~FETCH STAGE~~~~~~~~~~\n");
+	printf("rA: %"PRIu64"\t rB: %"PRIu64"\t valC: %"PRIu64
+	       "\t valP: %"PRIu64"\t icode: %u\t ifun: %d\t\n", state.fetch.a, state.fetch.b, state.fetch.c, state.fetch.p, state.fetch.icode, state.fetch.ifun);
+}
+
+static void
+disp_decode()
+{
+	printf("~~~~~~~~~~DECODE STAGE~~~~~~~~~~\n");
+	printf("valA: %"PRIu64"\t valB: %"PRIu64"\n", state.decode.a, state.decode.b);
+}
+
+static void
+disp_exec()
+{
+	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
+	printf("valE: %"PRIu64"\t Cnd: %hd\n", state.execute.e, state.execute.cond);
+}
+
+static void
+disp_mem()
+{
+	printf("~~~~~~~~~~MEMORY STAGE~~~~~~~~~~\n");
+	printf("valM: %"PRIu64"\t\n", state.memory.m);
+}
+
+static void
+disp_pc_updt()
 {
 	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
 	printf("newPC: %"PRIu64"\t\n", state.pc);
@@ -487,7 +493,7 @@ ovfl(int a, int b, int r)
 }
 
 
-static void printRegs()
+static void disp_regs()
 {
 	printf("RAX\tRBX\tRCX\tRDX\tRSP\tRBP\tRSI\tRDI\tR8\tR9\tR10\tR11\tR12\tR13\tR14\tR15\n");
 	printf("%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64
