@@ -93,7 +93,8 @@ static struct {
 };
 
 static stage_t stages[] = {
-	fetch, decode, execute, memory, writeback, pcupdate
+	fetch, changeFetch, decode, changeDecode, execute, changeExecute,
+	memory, changeMemory, writeback, printRegs, pcupdate, changePCUpdt,
 };
 
 static unsigned int nstages = sizeof(stages) / sizeof(*stages);
@@ -113,17 +114,12 @@ const struct memory *seq_mborrow(void)
 enum cpu_excep
 seq_step(void)
 {
-	for (unsigned int i = 0; i < nstages; i++) {
+	for (unsigned int i = 0; i < nstages; i += 2) {
 		if (state.ex != EX_AOK)
 			return state.ex;
 		(stages[i])();
+		(stages[i + 1])();
 	}
-	changeFetch();
-	changeDecode();
-	changeExecute();
-	changeMemory();
-	changePCUpdt();
-	printRegs();
 	return state.ex;
 }
 
