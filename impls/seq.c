@@ -185,6 +185,7 @@ fetch(void)
 	case OP_RET:
 		break;
 	}
+	printf("");
 }
 
 static void
@@ -507,4 +508,9 @@ static void disp_regs()
 	       state.registers[9], state.registers[10], state.registers[11],
 	       state.registers[12], state.registers[13], state.registers[14],
 	       state.registers[15]);
+}
+
+static void disp_CC_Stat()
+{
+	printf("Stat: %d\t", state.ex);
 }
