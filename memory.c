@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -44,8 +45,9 @@ mloadf(FILE *f)
 	}
 
 	map = mmap(NULL, MEMSIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE, zf, 0);
-	if (!f) {
+	if (map == MAP_FAILED) {
 		fprintf(stderr, "\033[1;31mCouldn't map memory for emulation.\033[0m\n");
+		fprintf(stderr, "\Err #%d\n", errno);
 		return NULL;
 	}
 
