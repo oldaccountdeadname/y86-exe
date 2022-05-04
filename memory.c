@@ -38,7 +38,7 @@ mloadf(FILE *f)
 		return NULL;
 	}
 
-	zf = open("/dev/zero", O_RDONLY);
+	zf = open("/dev/zero", O_RDWR);
 	if (zf < 0) {
 		fprintf(stderr, "\033[1;31m/dev/zero somehow inaccessible.\033[0m\n");
 		return NULL;
