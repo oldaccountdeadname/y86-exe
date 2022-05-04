@@ -45,7 +45,11 @@ static struct {
 	uint64_t registers[16];
 	uint64_t pc;
 
-	enum flag flags;
+	struct {
+		int zf:1;
+		int sf:1;
+		int of:1;
+	} flags;
 
 	/* See p. 384, 389 (section 4.3) of Computer Systems. */
 	uint64_t p;
@@ -79,7 +83,7 @@ static struct {
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	0,
 
-	0,
+	{ 0, 0, 0 },
 
 	0,
 
@@ -275,23 +279,21 @@ execute(void)
 		switch (state.fetch.ifun) {
 		case 0x0:
 			state.execute.e = state.decode.b + state.decode.a;
-			state.flags = (state.flags & ~OF) |
-				!!(ovfl(state.decode.a, state.decode.b,
-					state.execute.e)) << OF_OFFSET;
+			state.flags.of = ovfl(state.decode.b, state.decode.a,
+					      state.execute.e);
 			break;
 		case 0x1:
 			state.execute.e = state.decode.b - state.decode.a;
-			state.flags = (state.flags & ~OF) |
-				!!(ovfl(state.decode.a, state.decode.b,
-					state.execute.e)) << OF_OFFSET;
+			state.flags.of = ovfl(-state.decode.b, state.decode.a,
+					      state.execute.e);
 			break;
 		case 0x2:
 			state.execute.e = state.decode.b & state.decode.a;
-			state.flags &= ~OF;
+			state.flags.of = 0;
 			break;
 		case 0x3:
 			state.execute.e = state.decode.b ^ state.decode.a;
-			state.flags &= ~OF;
+			state.flags.of = 0;
 			break;
 		default:
 			state.ex = EX_INS;
@@ -461,17 +463,17 @@ cmpcc(int op)
 	case 0: return 1;
 
 	case 1: /* le */
-		return (FLAG(SF) != FLAG(OF)) || FLAG(ZF);
+		return (state.flags.sf != state.flags.of) || state.flags.zf;
 	case 2: /* l */
-		return FLAG(SF) != FLAG(OF);
+		return state.flags.sf != state.flags.of;
 	case 3: /* e */
-		return FLAG(ZF);
+		return state.flags.zf;
 	case 4: /* ne */
-		return !FLAG(ZF);
+		return !state.flags.zf;
 	case 5: /* ge */
-		return !(FLAG(SF) ^ FLAG(OF));
+		return !(state.flags.sf ^ state.flags.of);
 	case 6: /* g */
-		return !(FLAG(SF) != FLAG(OF)) && ~FLAG(ZF);
+		return !(state.flags.sf != state.flags.of) && ~state.flags.zf;
 	default:
 		// unreachable.
 		assert(0);
@@ -481,8 +483,8 @@ cmpcc(int op)
 static void
 upopflg(int x)
 {
-	state.flags = (state.flags & ~ZF) | (!!(x == 0) << ZF_OFFSET);
-	state.flags = (state.flags & ~SF) | (!!(x  < 0) << SF_OFFSET);
+	state.flags.zf = x == 0;
+	state.flags.sf = x < 0;
 }
 
 static int
