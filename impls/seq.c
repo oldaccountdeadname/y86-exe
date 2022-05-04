@@ -185,7 +185,6 @@ fetch(void)
 	case OP_RET:
 		break;
 	}
-	printf("");
 }
 
 static void
