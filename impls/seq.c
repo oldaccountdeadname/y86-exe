@@ -427,6 +427,7 @@ disp_fetch()
 	printf(STAGE("FETCH"));
 	printf("rA:\t%"PRIu64"\trB:\t%"PRIu64"\tvalC:\t%"PRIu64
 	       "\tvalP:\t%"PRIu64"\nicode:\t%u\tifun:\t%d\n", state.fetch.a, state.fetch.b, state.fetch.c, state.fetch.p, state.fetch.icode, state.fetch.ifun);
+	printf("symbolic:\t%s\n", syms[state.fetch.icode + state.fetch.ifun]);
 	disp_excep();
 }
 

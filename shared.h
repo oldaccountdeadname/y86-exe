@@ -21,3 +21,38 @@ static const char *exps[] = {
 	"\033[32mAOK\033[0m", "HLT", "ADR", "INS",
 	"INVALID EXCEPTION CODE ENCOUNTERED",
 };
+
+static const char *syms[] = {
+	[0x00] = "hlt",
+	[0x10] = "nop",
+
+	[0x20] = "rrmovq",
+	[0x30] = "irmovq",
+	[0x40] = "rmmovq",
+	[0x50] = "mrmovq",
+
+	[0x60] = "addq",
+	[0x61] = "subq",
+	[0x62] = "andq",
+	[0x63] = "xorq",
+
+	[0x70] = "jmp",
+	[0x71] = "jle",
+	[0x72] = "jl",
+	[0x73] = "je",
+	[0x74] = "jne",
+	[0x75] = "jge",
+	[0x76] = "jg",
+
+	[0x21] = "cmovle",
+	[0x22] = "cmovl",
+	[0x23] = "cmove",
+	[0x24] = "cmovne",
+	[0x25] = "cmovge",
+	[0x26] = "cmovg",
+
+	[0x80] = "call",
+	[0x90] = "ret",
+	[0xa0] = "pushq",
+	[0xb0] = "popq",
+};
