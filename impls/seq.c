@@ -29,7 +29,7 @@ static void disp_decode(void);
 static void disp_exec(void);
 static void disp_mem(void);
 static void disp_pc_updt(void);
-static void disp_regs(void);
+static void disp_writeback(void);
 static void disp_excep(void);
 
 
@@ -102,7 +102,7 @@ static struct {
 
 static const stage_t stages[] = {
 	fetch, disp_fetch, decode, disp_decode, execute, disp_exec,
-	memory, disp_mem, writeback, disp_regs, pcupdate, disp_pc_updt,
+	memory, disp_mem, writeback, disp_writeback, pcupdate, disp_pc_updt,
 };
 
 static const unsigned int nstages = sizeof(stages) / sizeof(*stages);
@@ -385,7 +385,7 @@ writeback(void)
 		break;
 
 	case OP_IRM:
-		state.registers[state.fetch.a] = state.fetch.c;
+		state.registers[state.fetch.b] = state.fetch.c;
 		break;
 
 	case OP_MRM:
@@ -503,18 +503,27 @@ ovfl(int a, int b, int r)
 
 
 static
-void disp_regs()
+void disp_writeback()
 {
-	printf("RAX\tRBX\tRCX\tRDX\tRSP\tRBP\tRSI\tRDI\tR8\tR9\tR10\tR11\tR12\tR13\tR14\tR15\n");
-	printf("%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64
-	       "\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64
-	       "\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t\n",
+	printf(STAGE("WRITEBACK"));
+	printf("RAX\tRBX\tRCX\tRDX\n");
+	printf("%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\n",
 	       state.registers[0], state.registers[1], state.registers[2],
-	       state.registers[3], state.registers[4], state.registers[5],
-	       state.registers[6], state.registers[7], state.registers[8],
-	       state.registers[9], state.registers[10], state.registers[11],
-	       state.registers[12], state.registers[13], state.registers[14],
-	       state.registers[15]);
+	       state.registers[3]);
+
+	printf("RSP\tRBP\tRSI\tRDI\n");
+	printf("%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\n",
+	       state.registers[4], state.registers[5], state.registers[6],
+	       state.registers[7]);
+
+	printf("R8\tR9\tR10\tR11\n");
+	printf("%"PRIu64"\t%"PRIu64"\t%"PRIu64"\t%"PRIu64"\n",
+	       state.registers[8], state.registers[9], state.registers[10],
+	       state.registers[11]);
+
+	printf("R12\tR13\tR14\n");
+	printf("%"PRIu64"\t%"PRIu64"\t%"PRIu64"\n",
+	       state.registers[12], state.registers[13], state.registers[14]);
 }
 
 static void
