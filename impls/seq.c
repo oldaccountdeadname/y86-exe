@@ -13,6 +13,7 @@
 
 #define FLAG(f) (state.flags & f)
 
+#define STAGE(s) "\n["s" STAGE]\n\n"
 
 typedef void (*stage_t)(void);
 
@@ -423,41 +424,41 @@ pcupdate(void)
 static void
 disp_fetch()
 {
-	printf("~~~~~~~~~~FETCH STAGE~~~~~~~~~~\n");
-	printf("rA: %"PRIu64"\t rB: %"PRIu64"\t valC: %"PRIu64
-	       "\t valP: %"PRIu64"\t icode: %u\t ifun: %d\t\n", state.fetch.a, state.fetch.b, state.fetch.c, state.fetch.p, state.fetch.icode, state.fetch.ifun);
+	printf(STAGE("FETCH"));
+	printf("rA:\t%"PRIu64"\trB:\t%"PRIu64"\tvalC:\t%"PRIu64
+	       "\tvalP:\t%"PRIu64"\nicode:\t%u\tifun:\t%d\n", state.fetch.a, state.fetch.b, state.fetch.c, state.fetch.p, state.fetch.icode, state.fetch.ifun);
 	disp_excep();
 }
 
 static void
 disp_decode()
 {
-	printf("~~~~~~~~~~DECODE STAGE~~~~~~~~~~\n");
-	printf("valA: %"PRIu64"\t valB: %"PRIu64"\n", state.decode.a, state.decode.b);
+	printf(STAGE("DECODE"));
+	printf("valA:\t%"PRIu64"\tvalB:\t%"PRIu64"\n", state.decode.a, state.decode.b);
 	disp_excep();
 }
 
 static void
 disp_exec()
 {
-	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
-	printf("valE: %"PRIu64"\t Cnd: %hd\n", state.execute.e, state.execute.cond);
+	printf(STAGE("EXECUTE"));
+	printf("valE:\t%"PRIu64"\tCnd: %hd\n", state.execute.e, state.execute.cond);
 	disp_excep();
 }
 
 static void
 disp_mem()
 {
-	printf("~~~~~~~~~~MEMORY STAGE~~~~~~~~~~\n");
-	printf("valM: %"PRIu64"\t\n", state.memory.m);
+	printf(STAGE("MEMORY"));
+	printf("valM:\t%"PRIu64"\t\n", state.memory.m);
 	disp_excep();
 }
 
 static void
 disp_pc_updt()
 {
-	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
-	printf("newPC: %"PRIu64"\t\n", state.pc);
+	printf(STAGE("EXECUTE"));
+	printf("newPC:\t%"PRIu64"\n", state.pc);
 	disp_excep();
 }
 
