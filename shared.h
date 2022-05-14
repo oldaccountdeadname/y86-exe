@@ -18,6 +18,6 @@ enum opcode {
 };
 
 static const char *exps[] = {
-	"AOK", "HLT", "ADR", "INS",
+	"\033[32mAOK\033[0m", "HLT", "ADR", "INS",
 	"INVALID EXCEPTION CODE ENCOUNTERED",
 };

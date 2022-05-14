@@ -13,7 +13,7 @@
 
 #define FLAG(f) (state.flags & f)
 
-#define STAGE(s) "\n["s" STAGE]\n\n"
+#define STAGE(s) "\n[\033[1m"s" STAGE\033[0m]\n\n"
 
 typedef void (*stage_t)(void);
 
@@ -100,12 +100,12 @@ static struct {
 	EX_AOK,
 };
 
-static stage_t stages[] = {
+static const stage_t stages[] = {
 	fetch, disp_fetch, decode, disp_decode, execute, disp_exec,
 	memory, disp_mem, writeback, disp_regs, pcupdate, disp_pc_updt,
 };
 
-static unsigned int nstages = sizeof(stages) / sizeof(*stages);
+static const unsigned int nstages = sizeof(stages) / sizeof(*stages);
 
 void
 seq_mload(struct memory *m)
