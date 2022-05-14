@@ -29,7 +29,7 @@ static void disp_exec(void);
 static void disp_mem(void);
 static void disp_pc_updt(void);
 static void disp_regs(void);
-static void disp_cc_stats(void);
+static void disp_excep(void);
 
 
 /* Check condition codes to see if they match what's given in cmpcc. */
@@ -426,7 +426,7 @@ disp_fetch()
 	printf("~~~~~~~~~~FETCH STAGE~~~~~~~~~~\n");
 	printf("rA: %"PRIu64"\t rB: %"PRIu64"\t valC: %"PRIu64
 	       "\t valP: %"PRIu64"\t icode: %u\t ifun: %d\t\n", state.fetch.a, state.fetch.b, state.fetch.c, state.fetch.p, state.fetch.icode, state.fetch.ifun);
-	disp_cc_stats();
+	disp_excep();
 }
 
 static void
@@ -434,7 +434,7 @@ disp_decode()
 {
 	printf("~~~~~~~~~~DECODE STAGE~~~~~~~~~~\n");
 	printf("valA: %"PRIu64"\t valB: %"PRIu64"\n", state.decode.a, state.decode.b);
-	disp_cc_stats();
+	disp_excep();
 }
 
 static void
@@ -442,7 +442,7 @@ disp_exec()
 {
 	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
 	printf("valE: %"PRIu64"\t Cnd: %hd\n", state.execute.e, state.execute.cond);
-	disp_cc_stats();
+	disp_excep();
 }
 
 static void
@@ -450,7 +450,7 @@ disp_mem()
 {
 	printf("~~~~~~~~~~MEMORY STAGE~~~~~~~~~~\n");
 	printf("valM: %"PRIu64"\t\n", state.memory.m);
-	disp_cc_stats();
+	disp_excep();
 }
 
 static void
@@ -458,7 +458,7 @@ disp_pc_updt()
 {
 	printf("~~~~~~~~~~EXECUTE STAGE~~~~~~~~~~\n");
 	printf("newPC: %"PRIu64"\t\n", state.pc);
-	disp_cc_stats();
+	disp_excep();
 }
 
 static int
@@ -517,7 +517,7 @@ void disp_regs()
 }
 
 static void
-disp_cc_stats(void)
+disp_excep(void)
 {
-	printf("Stat: %d\n", state.ex);
+	printf("exception:\t%s\n", EXCEPTION(state.ex));
 }
